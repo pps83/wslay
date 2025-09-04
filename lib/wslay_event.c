@@ -99,14 +99,14 @@ static uint32_t decode(uint32_t *state, uint32_t *codep, uint32_t byte) {
 
 /* End of utf8 dfa */
 
-static ssize_t wslay_event_frame_recv_callback(uint8_t *buf, size_t len,
+static ptrdiff_t wslay_event_frame_recv_callback(uint8_t *buf, size_t len,
                                                int flags, void *user_data) {
   struct wslay_event_frame_user_data *e =
       (struct wslay_event_frame_user_data *)user_data;
   return e->ctx->callbacks.recv_callback(e->ctx, buf, len, flags, e->user_data);
 }
 
-static ssize_t wslay_event_frame_send_callback(const uint8_t *data, size_t len,
+static ptrdiff_t wslay_event_frame_send_callback(const uint8_t *data, size_t len,
                                                int flags, void *user_data) {
   struct wslay_event_frame_user_data *e =
       (struct wslay_event_frame_user_data *)user_data;
@@ -498,7 +498,7 @@ static int wslay_event_config_get_no_buffering(wslay_event_context_ptr ctx) {
 
 int wslay_event_recv(wslay_event_context_ptr ctx) {
   struct wslay_frame_iocb iocb;
-  ssize_t r;
+  ptrdiff_t r;
   while (ctx->read_enabled) {
     memset(&iocb, 0, sizeof(iocb));
     r = wslay_frame_recv(ctx->frame_ctx, &iocb);
@@ -741,7 +741,7 @@ wslay_event_send_ctrl_queue_pop(wslay_event_context_ptr ctx) {
 
 int wslay_event_send(wslay_event_context_ptr ctx) {
   struct wslay_frame_iocb iocb;
-  ssize_t r;
+  ptrdiff_t r;
   while (ctx->write_enabled &&
          (!wslay_queue_empty(&ctx->send_queue) ||
           !wslay_queue_empty(&ctx->send_ctrl_queue) || ctx->omsg)) {
@@ -869,10 +869,10 @@ int wslay_event_send(wslay_event_context_ptr ctx) {
   return 0;
 }
 
-ssize_t wslay_event_write(wslay_event_context_ptr ctx, uint8_t *buf,
+ptrdiff_t wslay_event_write(wslay_event_context_ptr ctx, uint8_t *buf,
                           size_t buflen) {
   struct wslay_frame_iocb iocb;
-  ssize_t r;
+  ptrdiff_t r;
   uint8_t *buf_last = buf;
   size_t wpayloadlen;
   while (ctx->write_enabled &&

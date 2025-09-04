@@ -51,11 +51,11 @@ We use 3 callbacks in this example::
 when it wants to read more data from the client.
 It looks like this::
 
-  ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *buf, size_t len,
+  ptrdiff_t recv_callback(wslay_event_context_ptr ctx, uint8_t *buf, size_t len,
                         void *user_data)
   {
     struct Session *session = (struct Session*)user_data;
-    ssize_t r;
+    ptrdiff_t r;
     while((r = recv(session->fd, buf, len, 0)) == -1 && errno == EINTR);
     if(r == -1) {
       if(errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -84,11 +84,11 @@ Notice that reading EOF here is unexpected: so it is also treated as an error.
 when it wants to send data to the client.
 It looks like this::
 
-  ssize_t send_callback(wslay_event_context_ptr ctx,
+  ptrdiff_t send_callback(wslay_event_context_ptr ctx,
                         const uint8_t *data, size_t len, void *user_data)
   {
     struct Session *session = (struct Session*)user_data;
-    ssize_t r;
+    ptrdiff_t r;
 
     int sflags = 0;
   #ifdef MSG_MORE

@@ -35,7 +35,7 @@ which is defined as follows::
       wslay_event_on_msg_recv_callback         on_msg_recv_callback;
   };
 
-.. c:type:: ssize_t (*wslay_event_recv_callback)(wslay_event_context_ptr ctx, uint8_t *buf, size_t len, int flags, void *user_data)
+.. c:type:: ptrdiff_t (*wslay_event_recv_callback)(wslay_event_context_ptr ctx, uint8_t *buf, size_t len, int flags, void *user_data)
 
    *recv_callback* is invoked by :c:func:`wslay_event_recv` when it
    wants to receive more data from peer.
@@ -51,7 +51,7 @@ which is defined as follows::
    set ``WSLAY_ERR_WOULDBLOCK`` instead. This is important because it tells
    :c:func:`wslay_event_recv` to stop receiving further data and return.
 
-.. c:type:: ssize_t (*wslay_event_send_callback)(wslay_event_context_ptr ctx, const uint8_t *data, size_t len, int flags, void *user_data)
+.. c:type:: ptrdiff_t (*wslay_event_send_callback)(wslay_event_context_ptr ctx, const uint8_t *data, size_t len, int flags, void *user_data)
 
    *send_callback* is invoked by :c:func:`wslay_event_send` when it
    wants to send more data to peer.

@@ -138,8 +138,8 @@ public:
   }
   int on_read_event() { return wslay_event_recv(ctx_); }
   int on_write_event() { return wslay_event_send(ctx_); }
-  ssize_t send_data(const uint8_t *data, size_t len, int flags) {
-    ssize_t r;
+  ptrdiff_t send_data(const uint8_t *data, size_t len, int flags) {
+    ptrdiff_t r;
     int sflags = 0;
 #ifdef MSG_MORE
     if (flags & WSLAY_MSG_MORE) {
@@ -150,7 +150,7 @@ public:
       ;
     return r;
   }
-  ssize_t feed_body(uint8_t *data, size_t len) {
+  ptrdiff_t feed_body(uint8_t *data, size_t len) {
     if (body_off_ < body_.size()) {
       size_t wlen = std::min(len, body_.size() - body_off_);
       memcpy(data, body_.c_str(), wlen);
@@ -160,8 +160,8 @@ public:
       return 0;
     }
   }
-  ssize_t recv_data(uint8_t *data, size_t len, int flags) {
-    ssize_t r;
+  ptrdiff_t recv_data(uint8_t *data, size_t len, int flags) {
+    ptrdiff_t r;
     while ((r = recv(fd_, data, len, 0)) == -1 && errno == EINTR)
       ;
     return r;
@@ -184,10 +184,10 @@ private:
   std::fstream dev_urand_;
 };
 
-ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
+ptrdiff_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
                       size_t len, int flags, void *user_data) {
   WebSocketClient *ws = (WebSocketClient *)user_data;
-  ssize_t r = ws->send_data(data, len, flags);
+  ptrdiff_t r = ws->send_data(data, len, flags);
   if (r == -1) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
       wslay_event_set_error(ctx, WSLAY_ERR_WOULDBLOCK);
@@ -198,10 +198,10 @@ ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
   return r;
 }
 
-ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
+ptrdiff_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
                       int flags, void *user_data) {
   WebSocketClient *ws = (WebSocketClient *)user_data;
-  ssize_t r = ws->recv_data(data, len, flags);
+  ptrdiff_t r = ws->recv_data(data, len, flags);
   if (r == -1) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
       wslay_event_set_error(ctx, WSLAY_ERR_WOULDBLOCK);
@@ -215,7 +215,7 @@ ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
   return r;
 }
 
-ssize_t feed_body_callback(wslay_event_context_ptr ctx, uint8_t *data,
+ptrdiff_t feed_body_callback(wslay_event_context_ptr ctx, uint8_t *data,
                            size_t len, int flags, void *user_data) {
   WebSocketClient *ws = (WebSocketClient *)user_data;
   return ws->feed_body(data, len);
@@ -250,7 +250,7 @@ void get_casecnt_on_msg_recv_callback(
 int send_http_handshake(int fd, const std::string &reqheader) {
   size_t off = 0;
   while (off < reqheader.size()) {
-    ssize_t r;
+    ptrdiff_t r;
     size_t len = reqheader.size() - off;
     while ((r = write(fd, reqheader.c_str() + off, len)) == -1 &&
            errno == EINTR)
@@ -267,7 +267,7 @@ int send_http_handshake(int fd, const std::string &reqheader) {
 int recv_http_handshake(int fd, std::string &resheader) {
   char buf[4096];
   while (1) {
-    ssize_t r;
+    ptrdiff_t r;
     while ((r = read(fd, buf, sizeof(buf))) == -1 && errno == EINTR)
       ;
     if (r <= 0) {
