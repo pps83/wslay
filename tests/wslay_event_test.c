@@ -59,7 +59,7 @@ static void scripted_data_feed_init(struct scripted_data_feed *df,
   df->feedseq[0] = data_length;
 }
 
-static ssize_t
+static ptrdiff_t
 scripted_read_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
                        const union wslay_event_msg_source *source, int *eof,
                        void *user_data) {
@@ -78,7 +78,7 @@ scripted_read_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
   return wlen;
 }
 
-static ssize_t scripted_recv_callback(wslay_event_context_ptr ctx,
+static ptrdiff_t scripted_recv_callback(wslay_event_context_ptr ctx,
                                       uint8_t *data, size_t len, int flags,
                                       void *user_data) {
   struct scripted_data_feed *df = ((struct my_user_data *)user_data)->df;
@@ -93,7 +93,7 @@ static ssize_t scripted_recv_callback(wslay_event_context_ptr ctx,
   return wlen;
 }
 
-static ssize_t accumulator_send_callback(wslay_event_context_ptr ctx,
+static ptrdiff_t accumulator_send_callback(wslay_event_context_ptr ctx,
                                          const uint8_t *buf, size_t len,
                                          int flags, void *user_data) {
   struct accumulator *acc = ((struct my_user_data *)user_data)->acc;
@@ -103,7 +103,7 @@ static ssize_t accumulator_send_callback(wslay_event_context_ptr ctx,
   return len;
 }
 
-static ssize_t one_accumulator_send_callback(wslay_event_context_ptr ctx,
+static ptrdiff_t one_accumulator_send_callback(wslay_event_context_ptr ctx,
                                              const uint8_t *buf, size_t len,
                                              int flags, void *user_data) {
   struct accumulator *acc = ((struct my_user_data *)user_data)->acc;
@@ -113,13 +113,13 @@ static ssize_t one_accumulator_send_callback(wslay_event_context_ptr ctx,
   return 1;
 }
 
-static ssize_t fail_recv_callback(wslay_event_context_ptr ctx, uint8_t *data,
+static ptrdiff_t fail_recv_callback(wslay_event_context_ptr ctx, uint8_t *data,
                                   size_t len, int flags, void *user_data) {
   wslay_event_set_error(ctx, WSLAY_ERR_CALLBACK_FAILURE);
   return -1;
 }
 
-static ssize_t fail_send_callback(wslay_event_context_ptr ctx,
+static ptrdiff_t fail_send_callback(wslay_event_context_ptr ctx,
                                   const uint8_t *buf, size_t len, int flags,
                                   void *user_data) {
   wslay_event_set_error(ctx, WSLAY_ERR_CALLBACK_FAILURE);

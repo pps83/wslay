@@ -51,7 +51,7 @@ int wslay_frame_context_init(wslay_frame_context_ptr *ctx,
 
 void wslay_frame_context_free(wslay_frame_context_ptr ctx) { free(ctx); }
 
-ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
+ptrdiff_t wslay_frame_send(wslay_frame_context_ptr ctx,
                          struct wslay_frame_iocb *iocb) {
   if (iocb->data_length > iocb->payload_length) {
     return WSLAY_ERR_INVALID_ARGUMENT;
@@ -105,7 +105,7 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
   }
   if (ctx->ostate == SEND_HEADER) {
     ptrdiff_t len = ctx->oheaderlimit - ctx->oheadermark;
-    ssize_t r;
+    ptrdiff_t r;
     int flags = 0;
     if (iocb->data_length > 0) {
       flags |= WSLAY_MSG_MORE;
@@ -139,7 +139,7 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
           const uint8_t *writelimit =
               datamark + wslay_min(sizeof(temp), datalen);
           size_t writelen = (size_t)(writelimit - datamark);
-          ssize_t r;
+          ptrdiff_t r;
           size_t i;
           for (i = 0; i < writelen; ++i) {
             temp[i] = datamark[i] ^ ctx->omaskkey[(ctx->opayloadoff + i) % 4];
@@ -162,7 +162,7 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
           }
         }
       } else {
-        ssize_t r;
+        ptrdiff_t r;
         r = ctx->callbacks.send_callback(iocb->data, iocb->data_length, 0,
                                          ctx->user_data);
         if (r > 0) {
@@ -180,12 +180,12 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
     if (ctx->opayloadoff == ctx->opayloadlen) {
       ctx->ostate = PREP_HEADER;
     }
-    return (ssize_t)totallen;
+    return (ptrdiff_t)totallen;
   }
   return WSLAY_ERR_INVALID_ARGUMENT;
 }
 
-ssize_t wslay_frame_write(wslay_frame_context_ptr ctx,
+ptrdiff_t wslay_frame_write(wslay_frame_context_ptr ctx,
                           struct wslay_frame_iocb *iocb, uint8_t *buf,
                           size_t buflen, size_t *pwpayloadlen) {
   uint8_t *buf_last = buf;
@@ -298,8 +298,8 @@ static void wslay_shift_ibuf(wslay_frame_context_ptr ctx) {
   ctx->ibufmark = ctx->ibuf;
 }
 
-static ssize_t wslay_recv(wslay_frame_context_ptr ctx) {
-  ssize_t r;
+static ptrdiff_t wslay_recv(wslay_frame_context_ptr ctx) {
+  ptrdiff_t r;
   if (ctx->ibufmark != ctx->ibuf) {
     wslay_shift_ibuf(ctx);
   }
@@ -316,9 +316,9 @@ static ssize_t wslay_recv(wslay_frame_context_ptr ctx) {
 
 #define WSLAY_AVAIL_IBUF(ctx) ((size_t)(ctx->ibuflimit - ctx->ibufmark))
 
-ssize_t wslay_frame_recv(wslay_frame_context_ptr ctx,
+ptrdiff_t wslay_frame_recv(wslay_frame_context_ptr ctx,
                          struct wslay_frame_iocb *iocb) {
-  ssize_t r;
+  ptrdiff_t r;
   if (ctx->istate == RECV_HEADER1) {
     uint8_t fin, opcode, rsv, payloadlen;
     if (WSLAY_AVAIL_IBUF(ctx) < ctx->ireqread) {
@@ -432,7 +432,7 @@ ssize_t wslay_frame_recv(wslay_frame_context_ptr ctx,
       ctx->istate = RECV_HEADER1;
       ctx->ireqread = 2;
     }
-    return (ssize_t)iocb->data_length;
+    return (ptrdiff_t)iocb->data_length;
   }
   return WSLAY_ERR_INVALID_ARGUMENT;
 }

@@ -236,7 +236,7 @@ static int http_handshake(int fd) {
   char header[16384], accept_key[29], res_header[256];
   const char *keyhdstart, *keyhdend;
   size_t header_length = 0, res_header_sent = 0, res_header_length;
-  ssize_t r;
+  ptrdiff_t r;
   while (1) {
     while ((r = read(fd, header + header_length,
                      sizeof(header) - header_length)) == -1 &&
@@ -309,10 +309,10 @@ struct Session {
   int fd;
 };
 
-static ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
+static ptrdiff_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
                              size_t len, int flags, void *user_data) {
   struct Session *session = (struct Session *)user_data;
-  ssize_t r;
+  ptrdiff_t r;
   int sflags = 0;
 #ifdef MSG_MORE
   if (flags & WSLAY_MSG_MORE) {
@@ -331,10 +331,10 @@ static ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
   return r;
 }
 
-static ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *buf,
+static ptrdiff_t recv_callback(wslay_event_context_ptr ctx, uint8_t *buf,
                              size_t len, int flags, void *user_data) {
   struct Session *session = (struct Session *)user_data;
-  ssize_t r;
+  ptrdiff_t r;
   (void)flags;
   while ((r = recv(session->fd, buf, len, 0)) == -1 && errno == EINTR)
     ;

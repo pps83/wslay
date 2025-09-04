@@ -31,6 +31,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <sys/types.h>
 
 /*
@@ -94,7 +95,7 @@ enum wslay_io_flags {
  * sent. If there is an error, return -1. The return value 0 is also
  * treated an error by the library.
  */
-typedef ssize_t (*wslay_frame_send_callback)(const uint8_t *data, size_t len,
+typedef ptrdiff_t (*wslay_frame_send_callback)(const uint8_t *data, size_t len,
                                              int flags, void *user_data);
 /*
  * Callback function used by wslay_frame_recv() function when it needs
@@ -107,7 +108,7 @@ typedef ssize_t (*wslay_frame_send_callback)(const uint8_t *data, size_t len,
  * error, return -1. The return value 0 is also treated an error by
  * the library.
  */
-typedef ssize_t (*wslay_frame_recv_callback)(uint8_t *buf, size_t len,
+typedef ptrdiff_t (*wslay_frame_recv_callback)(uint8_t *buf, size_t len,
                                              int flags, void *user_data);
 /*
  * Callback function used by wslay_frame_send() function when it needs
@@ -218,7 +219,7 @@ void wslay_frame_context_free(wslay_frame_context_ptr ctx);
  * data and data_length in iocb accordingly and call this function
  * again.
  */
-ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
+ptrdiff_t wslay_frame_send(wslay_frame_context_ptr ctx,
                          struct wslay_frame_iocb *iocb);
 
 /*
@@ -244,7 +245,7 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
  * remaining data to be sent, adjust data and data_length in iocb
  * accordingly and call this function again.
  */
-ssize_t wslay_frame_write(wslay_frame_context_ptr ctx,
+ptrdiff_t wslay_frame_write(wslay_frame_context_ptr ctx,
                           struct wslay_frame_iocb *iocb, uint8_t *buf,
                           size_t buflen, size_t *pwpayloadlen);
 
@@ -269,7 +270,7 @@ ssize_t wslay_frame_write(wslay_frame_context_ptr ctx,
  * remaining data to be received, call this function again.  This
  * function ensures frame alignment.
  */
-ssize_t wslay_frame_recv(wslay_frame_context_ptr ctx,
+ptrdiff_t wslay_frame_recv(wslay_frame_context_ptr ctx,
                          struct wslay_frame_iocb *iocb);
 
 struct wslay_event_context;
@@ -356,7 +357,7 @@ typedef void (*wslay_event_on_frame_recv_end_callback)(
  * instead. This is important because it tells wslay_event_recv() to
  * stop receiving further data and return.
  */
-typedef ssize_t (*wslay_event_recv_callback)(wslay_event_context_ptr ctx,
+typedef ptrdiff_t (*wslay_event_recv_callback)(wslay_event_context_ptr ctx,
                                              uint8_t *buf, size_t len,
                                              int flags, void *user_data);
 
@@ -379,7 +380,7 @@ typedef ssize_t (*wslay_event_recv_callback)(wslay_event_context_ptr ctx,
  * instead. This is important because it tells wslay_event_send() to
  * stop sending data and return.
  */
-typedef ssize_t (*wslay_event_send_callback)(wslay_event_context_ptr ctx,
+typedef ptrdiff_t (*wslay_event_send_callback)(wslay_event_context_ptr ctx,
                                              const uint8_t *data, size_t len,
                                              int flags, void *user_data);
 
@@ -599,7 +600,7 @@ int wslay_event_send(wslay_event_context_ptr ctx);
  * further call of wslay_event_write() and must close WebSocket
  * connection.
  */
-ssize_t wslay_event_write(wslay_event_context_ptr ctx, uint8_t *buf,
+ptrdiff_t wslay_event_write(wslay_event_context_ptr ctx, uint8_t *buf,
                           size_t buflen);
 
 struct wslay_event_msg {
@@ -658,7 +659,7 @@ union wslay_event_msg_source {
  * moment, return 0. If there is an error, return -1 and set error
  * code WSLAY_ERR_CALLBACK_FAILURE using wslay_event_set_error().
  */
-typedef ssize_t (*wslay_event_fragmented_msg_callback)(
+typedef ptrdiff_t (*wslay_event_fragmented_msg_callback)(
     wslay_event_context_ptr ctx, uint8_t *buf, size_t len,
     const union wslay_event_msg_source *source, int *eof, void *user_data);
 

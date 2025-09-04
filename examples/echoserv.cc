@@ -144,9 +144,9 @@ public:
   virtual EventHandler *next() = 0;
 };
 
-ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
+ptrdiff_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
                       size_t len, int flags, void *user_data);
-ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
+ptrdiff_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
                       int flags, void *user_data);
 void on_msg_recv_callback(wslay_event_context_ptr ctx,
                           const struct wslay_event_on_msg_recv_arg *arg,
@@ -184,8 +184,8 @@ public:
       return -1;
     }
   }
-  ssize_t send_data(const uint8_t *data, size_t len, int flags) {
-    ssize_t r;
+  ptrdiff_t send_data(const uint8_t *data, size_t len, int flags) {
+    ptrdiff_t r;
     int sflags = 0;
 #ifdef MSG_MORE
     if (flags & WSLAY_MSG_MORE) {
@@ -196,8 +196,8 @@ public:
       ;
     return r;
   }
-  ssize_t recv_data(uint8_t *data, size_t len, int flags) {
-    ssize_t r;
+  ptrdiff_t recv_data(uint8_t *data, size_t len, int flags) {
+    ptrdiff_t r;
     while ((r = recv(fd_, data, len, 0)) == -1 && errno == EINTR)
       ;
     return r;
@@ -213,10 +213,10 @@ private:
   wslay_event_context_ptr ctx_;
 };
 
-ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
+ptrdiff_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
                       size_t len, int flags, void *user_data) {
   EchoWebSocketHandler *sv = (EchoWebSocketHandler *)user_data;
-  ssize_t r = sv->send_data(data, len, flags);
+  ptrdiff_t r = sv->send_data(data, len, flags);
   if (r == -1) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
       wslay_event_set_error(ctx, WSLAY_ERR_WOULDBLOCK);
@@ -227,10 +227,10 @@ ssize_t send_callback(wslay_event_context_ptr ctx, const uint8_t *data,
   return r;
 }
 
-ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
+ptrdiff_t recv_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
                       int flags, void *user_data) {
   EchoWebSocketHandler *sv = (EchoWebSocketHandler *)user_data;
-  ssize_t r = sv->recv_data(data, len, flags);
+  ptrdiff_t r = sv->recv_data(data, len, flags);
   if (r == -1) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
       wslay_event_set_error(ctx, WSLAY_ERR_WOULDBLOCK);
@@ -278,7 +278,7 @@ public:
       if (len == 0) {
         break;
       }
-      ssize_t r;
+      ptrdiff_t r;
       while ((r = write(fd_, resheaders_.c_str() + off_, len)) == -1 &&
              errno == EINTR)
         ;
@@ -326,7 +326,7 @@ public:
   }
   virtual int on_read_event() {
     char buf[4096];
-    ssize_t r;
+    ptrdiff_t r;
     std::string client_key;
     while (1) {
       while ((r = read(fd_, buf, sizeof(buf))) == -1 && errno == EINTR)
