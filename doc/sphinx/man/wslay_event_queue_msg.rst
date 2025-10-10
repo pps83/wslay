@@ -54,7 +54,7 @@ codes:
 **WSLAY_ERR_NO_MORE_MSG**
   Could not queue given message. The one of
   possible reason is that close control frame has been
-  queued/sent and no further queueing message is not allowed.
+  queued/sent and no further queuing message is not allowed.
 
 **WSLAY_ERR_INVALID_ARGUMENT**
   The given message is invalid; or RSV1 is set for control frame; or

@@ -89,7 +89,7 @@ enum wslay_io_flags {
  * WSLAY_MSG_MORE
  *   There is more data to send
  *
- * It provides some hints to tune performance and behaviour. user_data
+ * It provides some hints to tune performance and behavior. user_data
  * is one given in wslay_frame_context_init() function. The
  * implementation of this function must return the number of bytes
  * sent. If there is an error, return -1. The return value 0 is also
@@ -260,7 +260,7 @@ ptrdiff_t wslay_frame_write(wslay_frame_context_ptr ctx,
  * received frame.  iocb->data is pointed to the buffer containing
  * received payload data.  This buffer is allocated by the library and
  * must be read-only.  iocb->data_length is the number of payload
- * bytes recieved.  This function calls recv_callback if it needs to
+ * bytes received.  This function calls recv_callback if it needs to
  * receive additional bytes. If it cannot receive any single bytes of
  * payload, it returns WSLAY_ERR_WANT_READ.  If the library detects
  * protocol violation in a received frame, this function returns
@@ -371,7 +371,7 @@ typedef ptrdiff_t (*wslay_event_recv_callback)(wslay_event_context_ptr ctx,
  * WSLAY_MSG_MORE
  *   There is more data to send
  *
- * It provides some hints to tune performance and behaviour.
+ * It provides some hints to tune performance and behavior.
  *
  * If there is an error, return -1 and set error code
  * WSLAY_ERR_CALLBACK_FAILURE using wslay_event_set_error(). Wslay
@@ -501,7 +501,7 @@ void wslay_event_config_set_callbacks(
  * When ping control frame is received, this function automatically
  * queues pong control frame.
  *
- * In case of a fatal errror which leads to negative return code, this
+ * In case of a fatal error which leads to negative return code, this
  * function calls wslay_event_set_read_enabled() with second argument
  * 0 to disable further read from peer.
  *
@@ -540,7 +540,7 @@ int wslay_event_recv(wslay_event_context_ptr ctx);
  * If there are any pending messages, wslay_event_want_write() returns
  * 1, otherwise returns 0.
  *
- * In case of a fatal errror which leads to negative return code, this
+ * In case of a fatal error which leads to negative return code, this
  * function calls wslay_event_set_write_enabled() with second argument
  * 0 to disable further transmission to peer.
  *
@@ -583,7 +583,7 @@ int wslay_event_send(wslay_event_context_ptr ctx);
  * If there are any pending messages, wslay_event_want_write() returns
  * 1, otherwise returns 0.
  *
- * In case of a fatal errror which leads to negative return code, this
+ * In case of a fatal error which leads to negative return code, this
  * function calls wslay_event_set_write_enabled() with second argument
  * 0 to disable further transmission to peer.
  *
@@ -624,7 +624,7 @@ struct wslay_event_msg {
  *
  * WSLAY_ERR_NO_MORE_MSG
  *   Could not queue given message. The one of possible reason is that
- *   close control frame has been queued/sent and no further queueing
+ *   close control frame has been queued/sent and no further queuing
  *   message is not allowed.
  *
  * WSLAY_ERR_INVALID_ARGUMENT
@@ -686,7 +686,7 @@ struct wslay_event_fragmented_msg {
  *
  * WSLAY_ERR_NO_MORE_MSG
  *   Could not queue given message. The one of possible reason is that
- *   close control frame has been queued/sent and no further queueing
+ *   close control frame has been queued/sent and no further queuing
  *   message is not allowed.
  *
  * WSLAY_ERR_INVALID_ARGUMENT
@@ -725,7 +725,7 @@ int wslay_event_queue_fragmented_msg_ex(
  *
  * WSLAY_ERR_NO_MORE_MSG
  *   Could not queue given message. The one of possible reason is that
- *   close control frame has been queued/sent and no further queueing
+ *   close control frame has been queued/sent and no further queuing
  *   message is not allowed.
  *
  * WSLAY_ERR_INVALID_ARGUMENT
@@ -746,7 +746,7 @@ int wslay_event_queue_close(wslay_event_context_ptr ctx, uint16_t status_code,
 void wslay_event_set_error(wslay_event_context_ptr ctx, int val);
 
 /*
- * Query whehter the library want to read more data from peer.
+ * Query whether the library want to read more data from peer.
  *
  * wslay_event_want_read() returns 1 if the library want to read more
  * data from peer, or returns 0.
@@ -754,7 +754,7 @@ void wslay_event_set_error(wslay_event_context_ptr ctx, int val);
 int wslay_event_want_read(wslay_event_context_ptr ctx);
 
 /*
- * Query whehter the library want to send more data to peer.
+ * Query whether the library want to send more data to peer.
  *
  * wslay_event_want_write() returns 1 if the library want to send more
  * data to peer, or returns 0.
