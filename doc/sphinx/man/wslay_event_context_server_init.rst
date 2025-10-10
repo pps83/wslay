@@ -62,7 +62,7 @@ which is defined as follows::
    ``WSLAY_MSG_MORE``
      There is more data to send
 
-   It provides some hints to tune performance and behaviour.
+   It provides some hints to tune performance and behavior.
 
    If there is an error, return -1 and
    set error code ``WSLAY_ERR_CALLBACK_FAILURE``
