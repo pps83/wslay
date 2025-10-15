@@ -624,7 +624,7 @@ struct wslay_event_msg {
  * WSLAY_ERR_NO_MORE_MSG
  *   Could not queue given message. The one of possible reason is that
  *   close control frame has been queued/sent and no further queuing
- *   message is not allowed.
+ *   message is allowed.
  *
  * WSLAY_ERR_INVALID_ARGUMENT
  *   The given message is invalid.
